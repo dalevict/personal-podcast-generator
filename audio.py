@@ -15,7 +15,7 @@ class Audio:
     def __init__(self, debug = True, dialog = "", verbose = False, subject=""):
         self.debug = debug
         self.dialog = dialog
-        load_dotenv(dotenv_path="elevenlabs.env")
+        load_dotenv(dotenv_path="env/elevenlabs.env")
         self.client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
         self.verbose = verbose
         self.subject = subject

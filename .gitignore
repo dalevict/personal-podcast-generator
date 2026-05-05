@@ -3,3 +3,4 @@ __pycache__
 podcasts/
 *.env
 dialog/*
+env/

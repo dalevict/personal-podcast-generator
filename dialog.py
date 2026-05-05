@@ -30,7 +30,7 @@ class Dialog:
         self.debug = debug
         self.max_turns = max_turns
         self.verbose = verbose
-        load_dotenv(dotenv_path="openai.env")
+        load_dotenv(dotenv_path="env/openai.env")
         self.llm = ChatOpenAI(model="gpt-4o")
         if debug:
             self.llm = None
@@ -44,7 +44,7 @@ class Dialog:
         self.workflow.add_edge(START, "host")
         self.workflow.add_conditional_edges("host", self.should_continue, {"guest": "guest", END: END})
         self.workflow.add_edge("guest", "host")
-        self.app = self.workflow.compile() # TODO: fix extra role mentions in last messages
+        self.app = self.workflow.compile() # TODO: fix extra role mentions in last messages like "HOST: HOST: ..."
         self.final_state = self.app.invoke({"messages": [], "count": 0})
         if not self.debug:
             self.save_local(self.final_state['messages'])
@@ -59,7 +59,10 @@ class Dialog:
 
     def guest_desc(self):
         prompt = f'Create a realistic character knowledgeable about {self.subject}. They can be an influencer, celebrity, or expert (must be fictional, and cannot be a financial, medical or legal advisor). Give them a distinct interesting personality you think would fit a {self.vibe} vibe. In their personal life they love {self.interests[0]}. Introduce them to an actor playing them in a podcast. For example: "You are Alex Roberts, a 55 year old mathematician with expertise in AI, specifically kernel clustering, who loves sports. Originally from the USA, you now live in Europe with your wife and two kids, your favorite food is hot dogs." Use that approximate format, around 3 sentences. Dont talk to the actor or about the actor, you are describing a character.'
-        result = 'You are Milo Varga, a 34-year-old AI culture researcher and digital creator known for breaking down how artificial intelligence quietly shapes everyday life—from recommendation algorithms to creative tools. Originally from Hungary, you now live in Berlin with your partner and your overly dramatic rescue dog, and you spend your free time deep in the arts scene, especially experimental cinema and street exhibitions. You’ve got a laid-back, thoughtful vibe, a soft spot for late-night food runs, and a knack for making complex tech feel human and relatable. '
+        if not self.debug:
+            result = self.llm.invoke(prompt).content
+        else:
+            result = 'You are Milo Varga, a 34-year-old AI culture researcher and digital creator known for breaking down how artificial intelligence quietly shapes everyday life—from recommendation algorithms to creative tools. Originally from Hungary, you now live in Berlin with your partner and your overly dramatic rescue dog, and you spend your free time deep in the arts scene, especially experimental cinema and street exhibitions. You’ve got a laid-back, thoughtful vibe, a soft spot for late-night food runs, and a knack for making complex tech feel human and relatable. '
         return result
 
     def host_prompt(self, count=0, messages=''):
