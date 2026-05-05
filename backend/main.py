@@ -11,7 +11,7 @@ from researcher import Researcher
 max_turns = 5 # total voice lines should be 2 * max_turns + 1 since the host starts and concludes
 
 debug = False
-# debug = True
+debug = True
 
 verbose = True
 
@@ -20,9 +20,6 @@ verbose = True
 interests = ['saturnian mysticism']
 podcast = "Prosper Podcast, a chill podcast for young people in Europe about interesting topics in the world today",
 
-
-
-# TODO: make frontend in react for localhost or smth
 
 # TODO: fix spaghetti code, other todos
 
@@ -55,3 +52,6 @@ audioo = Audio(
     dialog=dialogg,
     verbose = verbose
 ).result()
+
+# From the project root
+# uvicorn backend.api:app --reload --port 8000

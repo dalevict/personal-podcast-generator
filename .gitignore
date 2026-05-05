@@ -7,3 +7,6 @@ dialog/*
 dialog/
 env/
 env/*
+.vscode
+.vscode/*
+podcast_app.db

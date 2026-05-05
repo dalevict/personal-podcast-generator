@@ -44,7 +44,9 @@ class Dialog:
         self.workflow.add_edge(START, "host")
         self.workflow.add_conditional_edges("host", self.should_continue, {"guest": "guest", END: END})
         self.workflow.add_edge("guest", "host")
-        self.app = self.workflow.compile() # TODO: fix extra role mentions in last messages like "HOST: HOST: ..."
+        self.app = self.workflow.compile() 
+        # TODO: fix extra role mentions in last messages like "HOST: HOST: ..."
+        # TODO: fix host yapping about pets
         self.final_state = self.app.invoke({"messages": [], "count": 0})
         if not self.debug:
             self.save_local(self.final_state['messages'])
