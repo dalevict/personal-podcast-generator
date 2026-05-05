@@ -17,7 +17,7 @@ verbose = True
 
 # subject = "the rise of AI in day-to-day life"
 # interests = ['arts', 'cinema', 'DEI', 'dogs', 'food', 'sports', 'travel']
-interests = ['saturnian mysticism']
+interests = ['test']
 podcast = "Prosper Podcast, a chill podcast for young people in Europe about interesting topics in the world today",
 
 
@@ -25,33 +25,17 @@ podcast = "Prosper Podcast, a chill podcast for young people in Europe about int
 
 # TODO: make solution.md and README.md populated
 
-subjects = Researcher(
-    interests=interests,
-    debug = debug,
-    podcast=podcast,
-    verbose = verbose
-).subjects()
-
-
-subject = subjects[0]
-
-
-dialogg = Dialog(
-    subject = subject,
-    podcast = podcast,
-    vibe = "chill",
-    interests = interests,
-    debug = debug,
-    max_turns = max_turns,
-    verbose = verbose,
-).result()
-
 audioo = Audio(
-    subject=subject,
+    subject = interests[0],
     debug=debug, 
-    dialog=dialogg,
+    dialog=[
+        {"role": "HOST", "content": "Hello, nice to meet you"},
+        {"role": "GUEST", "content": "Hi, I'm Gary Bobson"}
+    ],
     verbose = verbose
 ).result()
 
 # From the project root
 # uvicorn backend.api:app --reload --port 8000
+# From /frontend/
+# npm run dev

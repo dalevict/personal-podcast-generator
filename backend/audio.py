@@ -8,6 +8,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+import random
+
 
 
 class Audio:
@@ -21,9 +23,10 @@ class Audio:
         self.subject = subject
 
     def result(self):
-        combined_audio = AudioSegment.empty()
-        voices = {"HOST": "21m00Tcm4TlvDq8ikWAM", 
-                "GUEST": "21m00Tcm4TlvDq8ikWAM"} # TODO: fix rachel talking to herself
+        guest_voices = ['hwnuNyWkl9DjdTFykrN6', 'RWLFUuahyl6QdlLs8Al5', 'gSYqSbtMajxq5LUT0bNl', '74Aolxyv6bUq7ZAIooY5']
+        combined_audio = AudioSegment.empty() 
+        voices = {"HOST": "21m00Tcm4TlvDq8ikWAM", # Remember host has to be a female voice
+                "GUEST": random.choice(guest_voices)}
         for line in self.dialog:
             if self.debug or self.dialog == "" or self.dialog == None:
                 break

@@ -20,7 +20,7 @@ class Dialog:
         vibe = "chill",
         interests = ['arts', 'cinema', 'DEI', 'dogs', 'food', 'sports', 'travel'],
         debug = True,
-        max_turns = 5,
+        turns = 5,
         verbose = False,
     ):
         self.subject = subject
@@ -28,7 +28,7 @@ class Dialog:
         self.vibe = vibe
         self.interests = interests
         self.debug = debug
-        self.max_turns = max_turns
+        self.turns = turns
         self.verbose = verbose
         load_dotenv(dotenv_path="backend/env/openai.env")
         self.llm = ChatOpenAI(model="gpt-4o")
@@ -59,8 +59,8 @@ class Dialog:
                 f.write(f"{line['role']}: {line['content']}\n")
         print(f"Dialog saved to: {file_path}")
 
-    def guest_desc(self):
-        prompt = f'Create a realistic character knowledgeable about {self.subject}. They can be an influencer, celebrity, or expert (must be fictional, and cannot be a financial, medical or legal advisor). Give them a distinct interesting personality you think would fit a {self.vibe} vibe. In their personal life they love {self.interests[0]}. Introduce them to an actor playing them in a podcast. For example: "You are Alex Roberts, a 55 year old mathematician with expertise in AI, specifically kernel clustering, who loves sports. Originally from the USA, you now live in Europe with your wife and two kids, your favorite food is hot dogs." Use that approximate format, around 3 sentences. Dont talk to the actor or about the actor, you are describing a character.'
+    def guest_desc(self): # Guest has to be a male because using male voice
+        prompt = f'Create a realistic male character knowledgeable about {self.subject}. They can be an influencer, celebrity, or expert (must be fictional, and cannot be a financial, medical or legal advisor). Give them a distinct interesting personality you think would fit a {self.vibe} vibe. In their personal life they love {self.interests[0]}. Introduce them to an actor playing them in a podcast. For example: "You are Alex Roberts, a 55 year old mathematician with expertise in AI, specifically kernel clustering, who loves sports. Originally from the USA, you now live in Europe with your wife and two kids, your favorite food is hot dogs." Use that approximate format, around 3 sentences. Dont talk to the actor or about the actor, you are describing a character.'
         if not self.debug:
             result = self.llm.invoke(prompt).content
         else:
@@ -74,7 +74,7 @@ class Dialog:
         else:
             prompt += "' Continue the conversation, don't be too AI-sounding (don't exaggerate how good or interesting things are). "
         prompt += f"Just talk to the guest and let parts of your life and personality come through. You are not describing the scene or saying 'GUEST' or 'ROLE'. You just talk, one half sentence or many full ones, with no formatting and no line breaks. "
-        lines_left = self.max_turns - count + 1
+        lines_left = self.turns - count + 1
         if (lines_left) == 1:
             prompt += f"You are on your last line in this podcast. Say goodbye to the guest and thank them. "
         elif (lines_left) < 5:
@@ -89,7 +89,7 @@ class Dialog:
     def guest_prompt(self, messages='', count=0):
         prompt = self.guest_description + "Here is a description of your the host of the podcast you are in (ignore the 2nd person): '" + self.host_description
         prompt += "' Continue the conversation. Keep it chill and informal don't repeat yourself or describe yourself or the host, don't be too AI-sounding (don't exaggerate how good or interesting things are), just talk to the host and let parts of your life and personality come through. You are not describing the scene or saying 'GUEST' or 'ROLE'. You just talk, one half sentence or many full ones, with no formatting and no line breaks. " 
-        lines_left = self.max_turns - count
+        lines_left = self.turns - count
         if lines_left == 1:
             prompt += f"You are on your last line in this podcast. Say goodbye to the host and thank them. "
         elif lines_left < 5:
@@ -123,4 +123,4 @@ class Dialog:
         return {"messages": [{"role": "GUEST", "content": response}], "count":state["count"]+1}
 
     def should_continue(self, state: PodcastState):
-        return "guest" if state["count"] < self.max_turns else END
+        return "guest" if state["count"] < self.turns else END

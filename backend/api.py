@@ -43,7 +43,7 @@ async def generate_podcast(username: str, subject: str):
         vibe="chill",
         interests=interests,
         debug=debug,
-        max_turns=5
+        turns=10
     )
     script = dialog_instance.result()
     audio_instance = Audio(
