@@ -30,7 +30,7 @@ class Dialog:
         self.debug = debug
         self.max_turns = max_turns
         self.verbose = verbose
-        load_dotenv(dotenv_path="env/openai.env")
+        load_dotenv(dotenv_path="backend/env/openai.env")
         self.llm = ChatOpenAI(model="gpt-4o")
         if debug:
             self.llm = None
@@ -51,7 +51,7 @@ class Dialog:
         return self.final_state['messages']
     
     def save_local(self, script):
-        file_path = "dialog/dialog.txt"
+        file_path = "backend/dialog/dialog.txt"
         with open(file_path, "w") as f:
             for line in script:
                 f.write(f"{line['role']}: {line['content']}\n")

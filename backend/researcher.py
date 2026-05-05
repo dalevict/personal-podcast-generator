@@ -9,8 +9,8 @@ class Researcher:
         self.interests = interests
         self.podcast = podcast
         self.verbose = verbose
-        load_dotenv(dotenv_path="env/tavily.env") 
-        load_dotenv(dotenv_path="env/openai.env")
+        load_dotenv(dotenv_path="backend/env/tavily.env") 
+        load_dotenv(dotenv_path="backend/env/openai.env")
         self.client = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
         self.llm = ChatOpenAI(model="gpt-4o")
         if debug:

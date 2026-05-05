@@ -11,12 +11,13 @@ from researcher import Researcher
 max_turns = 5 # total voice lines should be 2 * max_turns + 1 since the host starts and concludes
 
 debug = False
-debug = True
+# debug = True
 
 verbose = True
 
 # subject = "the rise of AI in day-to-day life"
-interests = ['arts', 'cinema', 'DEI', 'dogs', 'food', 'sports', 'travel']
+# interests = ['arts', 'cinema', 'DEI', 'dogs', 'food', 'sports', 'travel']
+interests = ['saturnian mysticism']
 podcast = "Prosper Podcast, a chill podcast for young people in Europe about interesting topics in the world today",
 
 
