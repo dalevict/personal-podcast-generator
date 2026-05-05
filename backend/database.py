@@ -47,7 +47,9 @@ def get_user_interests(username):
     cursor.execute('SELECT interests FROM users WHERE username = ?', (username,))
     row = cursor.fetchone()
     conn.close()
-    return json.loads(row[0]) if row else []
+    if row and row[0]:
+        return json.loads(row[0]) # Make sure this is parsed back into a list
+    return []
 
 def log_podcast(username, subject, filename):
     conn = sqlite3.connect(DB_PATH)

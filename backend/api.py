@@ -4,7 +4,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.researcher import Researcher
 import os
 from backend.database import init_db, save_user, get_user_interests, log_podcast
+from pydantic import BaseModel
+from typing import List
 
+
+
+class InterestUpdate(BaseModel):
+    username: str
+    interests: List[str]
+    
+    
+    
 app = FastAPI()
 
 init_db()
@@ -20,12 +30,18 @@ app.add_middleware(
 )
 
 
+@app.post("/update-interests")
+def update_interests(data: InterestUpdate):
+    # 'data' will now automatically have .username and .interests
+    save_user(data.username, data.interests)
+    return {"status": "success", "interests": data.interests}
+
 @app.post("/login")
 def login(username: str):
-    # If user doesn't exist, create them with empty interests
-    existing = get_user_interests(username)
-    if not existing:
+    existing = get_user_interests(username) 
+    if existing is None:
         save_user(username, [])
+        existing = []
     return {"username": username, "interests": existing}
 
 @app.get("/subjects")
