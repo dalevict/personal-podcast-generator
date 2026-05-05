@@ -10,3 +10,5 @@ env/*
 .vscode
 .vscode/*
 podcast_app.db
+frontend/node_modules/*
+frontend/node_modules

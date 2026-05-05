@@ -10,7 +10,7 @@ app = FastAPI()
 init_db()
 
 # Serve your local podcasts folder so React can play the audio files
-app.mount("/audio", StaticFiles(directory="podcasts"), name="audio")
+app.mount("/audio", StaticFiles(directory="backend/podcasts"), name="audio")
 
 app.add_middleware(
     CORSMiddleware,
@@ -42,5 +42,8 @@ def generate_podcast(subject: str, username: str):
 
 @app.get("/my-podcasts")
 def list_podcasts(username: str):
-    files = [f for f in os.listdir("podcasts") if f.startswith(username)]
+    folder_path = "backend/podcasts"
+    if not os.path.exists(folder_path):
+        return {"podcasts": [], "error": "Folder not found"}
+    files = [f for f in os.listdir(folder_path) if f.startswith(username)]
     return {"podcasts": files}
