@@ -20,7 +20,7 @@ class Researcher:
 
     def subjects(self):
         query = f"latest trending news and interesting developments in {self.interests} for 2026" # TODO: fix hardcoded date
-        search_result = self.client.search(query=query, search_depth="basic", max_results=5)
+        search_result = self.client.search(query=query, search_depth="basic", max_results=len(self.interests))
         
         context = "\n".join([f"- {r['title']}: {r['content']}" for r in search_result['results']])
         if self.verbose:
@@ -30,7 +30,7 @@ class Researcher:
         self.llm = ChatOpenAI(model="gpt-4o")
         if self.debug:
             self.llm = None
-        prompt = f"Based on this news about {self.interests}, give me 3 short, engaging podcast episodes titles/subjects. The podcast is {self.podcast}. "
+        prompt = f"Based on this news about {", ".join(self.interests)}, give me 3 short, engaging podcast episodes titles/subjects. The podcast is {self.podcast}. "
         prompt += "Don't use any formatting tricks. Simply put each subject as a sentence, followed by '/'. "
         prompt += "For example: 'Beyond the Frame: Exploring DEI in Europe's Growing Cinema Scene/Barks and Bites: The Canine & Culinary Culture of Europe/Artful Escapes: Traveling through Europe's Hidden Creative Hubs'"
         if not self.debug:
@@ -41,3 +41,4 @@ class Researcher:
         print(r for r in result if self.verbose)
         return result
         
+

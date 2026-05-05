@@ -30,7 +30,7 @@ class Audio:
             if self.verbose:
                 print(f"==> {line} <==")
                 print(voices)
-            audio_stream = self.client.text_to_speech.stream(
+            audio_stream = self.client.text_to_speech.stream( # TODO: fix occasional audio track being cut off
                 text=line['content'],
                 voice_id=voices[line['role']],
                 model_id="eleven_multilingual_v2"
@@ -39,9 +39,9 @@ class Audio:
                 print("=======================================================================")
             segment = AudioSegment.from_file(io.BytesIO(b"".join(audio_stream)), format="mp3") # TODO: optimize
             combined_audio += segment + AudioSegment.silent(duration=600)
-        self.audio = combined_audio
-        self.save_local()
-        return combined_audio
+        path = f"backend/podcasts/{self.subject}.mp3"
+        combined_audio.export(path, format="mp3")
+        return path
 
     # def save_local(script):
     #     file_path = "dialog/dialog.txt"

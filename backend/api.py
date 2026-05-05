@@ -6,6 +6,9 @@ import os
 from backend.database import init_db, save_user, get_user_interests, log_podcast
 from pydantic import BaseModel
 from typing import List
+from backend.dialog import Dialog
+from backend.audio import Audio
+import os
 
 
 
@@ -29,6 +32,31 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.post("/generate-podcast")
+async def generate_podcast(username: str, subject: str):
+    debug = False
+    interests = get_user_interests(username)
+    podcast = "Prosper Podcast, a chill podcast for young people in Europe about interesting topics in the world today"
+    dialog_instance = Dialog(
+        subject=subject,
+        podcast=podcast,
+        vibe="chill",
+        interests=interests,
+        debug=debug,
+        max_turns=5
+    )
+    script = dialog_instance.result()
+    audio_instance = Audio(
+        subject=subject,
+        debug=debug,
+        dialog=script
+    )
+    audio_path = audio_instance.result()
+    new_filename = f"{username}_{os.path.basename(audio_path)}"
+    new_path = os.path.join("backend/podcasts", new_filename)
+    os.rename(audio_path, new_path)
+    return {"status": "success", "file": new_filename}
+
 
 @app.post("/update-interests")
 def update_interests(data: InterestUpdate):
@@ -46,11 +74,16 @@ def login(username: str):
 
 @app.get("/subjects")
 def get_subjects(username: str):
-    # Fetch interests directly from the DB[cite: 1]
     interests = get_user_interests(username)
-    # Use your Researcher class to find news
-    res = Researcher(interests=interests) 
-    return {"subjects": res.subjects()}
+    researcher = Researcher(
+        interests=interests,
+        podcast="Prosper Podcast, a chill podcast for young people in Europe about interesting topics in the world today",
+        debug=False,
+        verbose=False
+    )
+    subjects = researcher.subjects()
+    clean_subjects = [s.strip() for s in subjects if s and s.strip()]
+    return {"subjects": clean_subjects}
 
 @app.post("/generate")
 def generate_podcast(subject: str, username: str):

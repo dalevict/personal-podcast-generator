@@ -11,7 +11,7 @@ from researcher import Researcher
 max_turns = 5 # total voice lines should be 2 * max_turns + 1 since the host starts and concludes
 
 debug = False
-debug = True
+# debug = True
 
 verbose = True
 

@@ -9,8 +9,7 @@ export default function App() {
     const [podcasts, setPodcasts] = useState([]);
     const [interests, setInterests] = useState([]);
     const [newInterest, setNewInterest] = useState('');
-
-    // SYNC INTERESTS: Runs whenever you enter the interests view
+    const [generating, setGenerating] = useState(false);
     useEffect(() => {
         const fetchInterests = async () => {
             if (user && view === 'interests') {
@@ -21,8 +20,6 @@ export default function App() {
         };
         fetchInterests();
     }, [view, user]);
-
-    // SYNC LIBRARY: Runs whenever you enter the library view
     useEffect(() => {
         if (view === 'library' && user) {
             fetch(`${API_BASE}/my-podcasts?username=${user}`)
@@ -30,7 +27,6 @@ export default function App() {
                 .then(data => setPodcasts(data.podcasts));
         }
     }, [view, user]);
-
     const handleLogout = () => {
         setUser('');
         setView('login');
@@ -38,7 +34,6 @@ export default function App() {
         setPodcasts([]);
         setInterests([]);
     };
-
     const saveInterests = async (updatedList) => {
         try {
             const response = await fetch(`${API_BASE}/update-interests`, {
@@ -60,7 +55,6 @@ export default function App() {
             console.error("Network error saving interests:", err);
         }
     };
-
     const LogoutButton = () => (
         <button 
             onClick={handleLogout}
@@ -152,25 +146,36 @@ export default function App() {
     );
 
     // 3. GENERATE PAGE
+    // Inside View 3: GENERATE PAGE
     if (view === 'generate') return (
-        <div style={{ padding: 40, fontFamily: 'sans-serif', position: 'relative' }}>
-            <LogoutButton />
-            <h1>Pick a Topic</h1>
+    <div style={{ padding: 40, fontFamily: 'sans-serif', position: 'relative' }}>
+        <LogoutButton />
+        <h1>Pick a Topic</h1>
+        
+        <button onClick={async () => {
+        // Step 1: Just get the topics[cite: 1]
+        const res = await fetch(`${API_BASE}/subjects?username=${user}`);
+        const data = await res.json();
+        setSubjects(data.subjects || []); 
+        }}>Refresh Suggestions</button>
+
+        <ul style={{ marginTop: 20 }}>
+        {subjects.map((s, i) => (
+            <li key={i} style={{ marginBottom: 15 }}>
+            <strong>{s}</strong> <br/>
+            {/* Step 2: Only generate when THIS button is clicked[cite: 1] */}
             <button onClick={async () => {
-                const res = await fetch(`${API_BASE}/subjects?username=${user}`);
-                const data = await res.json();
-                setSubjects(data.subjects || []);
-            }}>Refresh Suggestions</button>
-            <ul style={{ marginTop: 20 }}>
-                {subjects.map((s, i) => (
-                    <li key={i} style={{ marginBottom: 15 }}>
-                        <strong>{s}</strong> <br/>
-                        <button onClick={() => alert("Backend would trigger Audio class now!")}>Generate Episode</button>
-                    </li>
-                ))}
-            </ul>
-            <button onClick={() => setView('interests')}>Back</button>
-        </div>
+                alert(`Generating podcast for: ${s}`);
+                await fetch(`${API_BASE}/generate-podcast?username=${user}&subject=${encodeURIComponent(s)}`, {
+                    method: 'POST'
+                });
+                setView('library');
+            }}>Generate This Episode</button>
+            </li>
+        ))}
+        </ul>
+        <button onClick={() => setView('interests')}>Back</button>
+    </div>
     );
 
     // 4. LIBRARY PAGE
