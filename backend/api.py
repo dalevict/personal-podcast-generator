@@ -33,10 +33,9 @@ app.add_middleware(
 )
 
 @app.post("/generate-podcast")
-async def generate_podcast(username: str, subject: str):
+async def generate_podcast(username: str, subject: str, turns:int=10):
     debug = False
     verbose = True
-    turns = 10
     interests = get_user_interests(username)
     podcast = "Prosper Podcast, a chill podcast for young people in Europe about interesting topics in the world today"
     researcher = Researcher(

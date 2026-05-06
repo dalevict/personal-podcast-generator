@@ -113,7 +113,8 @@ class Dialog:
         response = prompt
         if self.debug == False:
             response = self.llm.invoke(prompt).content
-            response = response.replace("HOST:", "").replace("GUEST:", "").strip()
+            response = response.replace("HOST:", "").replace("GUEST:", "")
+            response = response.replace("\n", "").strip()
         # if self.verbose:
             # print(prompt)
         return {"messages": [{"role": "HOST", "content": response}], "count": state["count"]}
@@ -125,7 +126,8 @@ class Dialog:
         response = prompt
         if self.debug == False:
             response = self.llm.invoke(prompt).content
-            response = response.replace("HOST:", "").replace("GUEST:", "").strip()
+            response = response.replace("HOST:", "").replace("GUEST:", "")
+            response = response.replace("\n", "").strip()
         # if self.verbose:
             # print(prompt)
         return {"messages": [{"role": "GUEST", "content": response}], "count":state["count"]+1}

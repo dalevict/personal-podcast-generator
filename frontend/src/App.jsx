@@ -73,11 +73,14 @@ export default function App() {
             Logout
         </button>
     );
+    const [selectedSubject, setSelectedSubject] = useState('');
+    const [turns, setTurns] = useState(10);
+    const [debugLog, setDebugLog] = useState('');
 
     // 1. LOGIN PAGE
     if (view === 'login') return (
         <div style={{ padding: 40, fontFamily: 'sans-serif' }}>
-            <h1>🎙️ Podcast Login</h1>
+            <h1>Login</h1>
             <input id="uname" placeholder="Username" style={{ padding: 10 }} />
             <button onClick={async () => {
                 const name = document.getElementById('uname').value;
@@ -165,12 +168,14 @@ export default function App() {
             <strong>{s}</strong> <br/>
             {/* Step 2: Only generate when THIS button is clicked[cite: 1] */}
             <button onClick={async () => {
-                alert(`Generating podcast for: ${s}`);
-                await fetch(`${API_BASE}/generate-podcast?username=${user}&subject=${encodeURIComponent(s)}`, {
-                    method: 'POST'
-                });
-                setView('library');
-            }}>Generate This Episode</button>
+                // alert(`Generating podcast for: ${s}`);
+                // await fetch(`${API_BASE}/generate-podcast?username=${user}&subject=${encodeURIComponent(s)}`, {
+                //     method: 'POST'
+                // });
+                // setView('library');
+                setSelectedSubject(s);
+                setView('configure');
+            }}>Configure This Episode</button>
             </li>
         ))}
         </ul>
@@ -193,6 +198,70 @@ export default function App() {
                             <audio controls src={`${API_BASE}/audio/${file}`} style={{ width: '100%' }} />
                         </div>
                     ))}
+                </div>
+            )}
+        </div>
+    );
+
+    if (view === 'configure') return (
+        <div style={{ padding: 40, fontFamily: 'sans-serif' }}>
+            <LogoutButton />
+            <h1>Configure: {selectedSubject}</h1>
+            
+            {!generating ? (
+                <div>
+                    <p>How long should the podcast be? (Number of conversational turns)</p>
+                    <input 
+                        type="number" 
+                        value={turns} 
+                        onChange={(e) => setTurns(e.target.value)}
+                        style={{ padding: 10, width: '60px', marginRight: 10 }}
+                    />
+                    <button 
+                        style={{ padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px' }}
+                        onClick={async () => {
+                            setGenerating(true);
+                            setDebugLog("Starting research and script generation...");
+                            
+                            try {
+                                const res = await fetch(`${API_BASE}/generate-podcast?username=${user}&subject=${encodeURIComponent(selectedSubject)}&turns=${turns}`, {
+                                    method: 'POST'
+                                });
+                                if (res.ok) {
+                                    setView('library');
+                                }
+                            } catch (err) {
+                                setDebugLog("Error: " + err.message);
+                            } finally {
+                                setGenerating(false);
+                            }
+                        }}
+                    >
+                        🚀 Start Generation
+                    </button>
+                    <button onClick={() => setView('generate')} style={{ marginLeft: 10 }}>Cancel</button>
+                </div>
+            ) : (
+                <div style={{ marginTop: 20 }}>
+                    <div className="spinner" style={{ marginBottom: 20 }}>⏳ Generating your podcast... please wait.</div>
+                    
+                    {/* Debug Info Section */}
+                    <div style={{ 
+                        background: '#1e1e1e', 
+                        color: '#00ff00', 
+                        padding: 15, 
+                        borderRadius: 5, 
+                        fontFamily: 'monospace',
+                        fontSize: '12px',
+                        maxHeight: '200px',
+                        overflowY: 'auto'
+                    }}>
+                        <strong>Debug Stream:</strong>
+                        <p>{debugLog}</p>
+                        <p>Processing subject: {selectedSubject}</p>
+                        <p>Requested turns: {turns}</p>
+                        <p>Contacting AI nodes...</p>
+                    </div>
                 </div>
             )}
         </div>

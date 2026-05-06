@@ -49,49 +49,52 @@ class Audio:
         stability = random.uniform(0.25, 0.5)
         style = random.uniform(0.25, 0.75)
         speed = random.uniform(0.5, 1)
-        for line in self.dialog:
-            if not self.dialog or self.dialog == "" or self.dialog == None:
-                break
-            if self.verbose:
-                print(f"==> USING {line} <==")
-                print(voices)
-            if line['role'] == 'GUEST':
-                print("VOICE: ", voices[line['role']])
-                audio_stream = self.client.text_to_speech.stream( # TODO: fix occasional audio track being cut off
-                    text=line['content'],
-                    voice_id=voices[line['role']],
-                    model_id="eleven_v3",
-                    voice_settings=VoiceSettings(
-                        speed = speed,
-                        stability=stability,
-                        similarity_boost=0.6, 
-                        style=style,
-                        use_speaker_boost=True
+        if self.debug:
+            return 'backend/podcasts/'
+        else:
+            for line in self.dialog:
+                if not self.dialog or self.dialog == "" or self.dialog == None:
+                    break
+                if self.verbose:
+                    print(f"==> USING {line} <==")
+                    print(voices)
+                if line['role'] == 'GUEST':
+                    print("VOICE: ", voices[line['role']])
+                    audio_stream = self.client.text_to_speech.stream( # TODO: fix occasional audio track being cut off
+                        text=line['content'],
+                        voice_id=voices[line['role']],
+                        model_id="eleven_v3",
+                        voice_settings=VoiceSettings(
+                            speed = speed,
+                            stability=stability,
+                            similarity_boost=0.6, 
+                            style=style,
+                            use_speaker_boost=True
+                        )
                     )
-                )
-            elif line['role'] == 'HOST':
-                print("VOICE: ", voices[line['role']])
-                audio_stream = self.client.text_to_speech.stream(
-                    text=line['content'],
-                    voice_id=voices[line['role']],
-                    model_id="eleven_v3",
-                    voice_settings=VoiceSettings(
-                        speed = 0.8,
-                        stability=0.25,
-                        similarity_boost=0.5, 
-                        style=0.5,
-                        use_speaker_boost=True
+                elif line['role'] == 'HOST':
+                    print("VOICE: ", voices[line['role']])
+                    audio_stream = self.client.text_to_speech.stream(
+                        text=line['content'],
+                        voice_id=voices[line['role']],
+                        model_id="eleven_v3",
+                        voice_settings=VoiceSettings(
+                            speed = 0.8,
+                            stability=0.25,
+                            similarity_boost=0.5, 
+                            style=0.5,
+                            use_speaker_boost=True
+                        )
                     )
-                )
-            else:
-                break
-            if self.verbose:
-                print("=======================================================================")
-            segment = AudioSegment.from_file(io.BytesIO(b"".join(audio_stream)), format="mp3") # TODO: optimize
-            combined_audio += segment + AudioSegment.silent(duration=600)
-        path = f"backend/podcasts/{self.subject}.mp3"
-        combined_audio.export(path, format="mp3")
-        return path
+                else:
+                    break
+                if self.verbose:
+                    print("=======================================================================")
+                segment = AudioSegment.from_file(io.BytesIO(b"".join(audio_stream)), format="mp3") # TODO: optimize
+                combined_audio += segment + AudioSegment.silent(duration=600)
+            path = f"backend/podcasts/{self.subject}.mp3"
+            combined_audio.export(path, format="mp3")
+            return path
 
     # def save_local(script):
     #     file_path = "dialog/dialog.txt"
