@@ -44,5 +44,6 @@ So far the project has many limitations:
 * The characters in `Dialog` generate their sentences one at a time, so the flow of conversation is very "turn-based" and they cannot interrupt each other, like in a normal conversation.
 * The length of the dialog is set by the user instead of the chatbots deciding when to naturally end the conversation. This was decided in order to prevent tokens being wasted, and allows the user to set approximately how long they want their podcast to be. 
 * The metrics page contains mock hardcoded values. This is for simplicity and also because there are very few users.
+* Formatting also needs work: the solution is not linted in order to let the way I naturally code appear.
 * In very rare cases, despite the prompts, the dialog may contain garbage such as extra "HOST:" statements, or off-topic remarks. 
 * There can also be, very rarely, some audio tracks being cut off before finishing.
