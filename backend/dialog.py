@@ -34,12 +34,14 @@ class Dialog:
         load_dotenv(dotenv_path="backend/env/openai.env")
         self.llm = ChatOpenAI(model="gpt-4o")
         self.warning_turns = warning_turns
+        if (self.warning_turns > self.turns):
+            self.warning_turns = self.turns
         if debug:
             self.llm = None
                 
     def result(self):
         self.guest_description = self.guest_desc()
-        self.host_description = f"You are the host of {self.podcast}. Your name is Jane Johnson, 34. You are Brazilian but lived in Europe your whole life. You know about {self.subject} but not much more than the average person, and you have only met today's guest once, but he is an expert on the topic. "
+        self.host_description = f"You are the host of {self.podcast}. Your name is Tina Johnson, 34. You are South African but lived in Europe your whole life. You know about {self.subject} but not much more than the average person, and you have only met today's guest once, but he is an expert on the topic. "
         self.workflow = StateGraph(PodcastState)
         self.workflow.add_node("host", self.host_node)
         self.workflow.add_node("guest", self.guest_node)
@@ -60,8 +62,8 @@ class Dialog:
                 f.write(f"{line['role']}: {line['content']}\n")
         # print(f"Dialog saved to: {file_path}")
 
-    def guest_desc(self): # Guest has to be a male because using male voice
-        prompt = f'Create a realistic male character knowledgeable about {self.subject}. They can be an influencer, celebrity, or expert (must be fictional, and cannot be a financial, medical or legal advisor). Give them a distinct interesting personality you think would fit a {self.vibe} vibe. In their personal life they love {self.interests[0]}. Introduce them to an actor playing them in a podcast. For example: "You are Alex Roberts, a 55 year old mathematician with expertise in AI, specifically kernel clustering, who loves sports. Originally from the USA, you now live in Europe with your wife and two kids, your favorite food is hot dogs." Use that approximate format, around 3 sentences. Dont talk to the actor or about the actor, you are describing a character.'
+    def guest_desc(self):
+        prompt = f'Create a realistic character knowledgeable about {self.subject}. They can be an influencer, celebrity, or expert (must be fictional, and cannot be a financial, medical or legal advisor). Give them a distinct interesting personality you think would fit a {self.vibe} vibe. In their personal life they love {self.interests[0]}. Introduce them to an actor playing them in a podcast. For example: "You are Alex Roberts, a 55 year old mathematician with expertise in AI, specifically kernel clustering, who loves sports. Originally from the USA, you now live in Europe with your wife and two kids, your favorite food is hot dogs." Use that approximate format, around 3 sentences. Dont talk to the actor or about the actor, you are describing a character.'
         if not self.debug:
             result = self.llm.invoke(prompt).content
         else:

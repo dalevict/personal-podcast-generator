@@ -26,18 +26,24 @@ class Audio:
         self.client = ElevenLabs(api_key=os.getenv("ELEVENLABS_API_KEY"))
         self.verbose = verbose
         self.subject = subject
-        self.guest_voices = [{'hwnuNyWkl9DjdTFykrN6':'Brazilian'},
-                            {'RWLFUuahyl6QdlLs8Al5':'Eastern'},
-                            {'gSYqSbtMajxq5LUT0bNl':'Indian'},
-                            {'4QLC5fepxZkYmdD2IGRU':'American'},
-                            {'VHYWoxffK1pFlM1dtRb0':'German'},
-                            {'y0SYydk17lMbUIUvSf3N':'British'}]
+        self.guest_voices = [{'hwnuNyWkl9DjdTFykrN6':'Brazilian Male'},
+                            {'RWLFUuahyl6QdlLs8Al5':'Eastern Male'},
+                            {'gSYqSbtMajxq5LUT0bNl':'Indian Male'},
+                            {'4QLC5fepxZkYmdD2IGRU':'American Male'},
+                            {'VHYWoxffK1pFlM1dtRb0':'German Male'},
+                            {'y0SYydk17lMbUIUvSf3N':'British Male'},
+                            {'VUGQSU6BSEjkbudnJbOj':'White American Female'},
+                            {'T3b0vsQ5dQwMZ5ckOwBk':'Middle Eastern American Female'},
+                            {'CiwzbDpaN3pQXjTgx3ML':'Italian Female'},
+                            {'IKuPqyuiEnnZFcU4OVzH':'Asian American Female'},
+                            {'54YYBuRuAG6KJooiOhFI':'Eastern European Female'}
+                            ]
         self.guest_desc = guest_desc
         print(guest_desc)
 
     def result(self):
         combined_audio = AudioSegment.empty() 
-        voices = {"HOST": "Z0QKopwR1e0SJMnL0DU0", # 21m00Tcm4TlvDq8ikWAM # T3b0vsQ5dQwMZ5ckOwBk
+        voices = {"HOST": "Z0QKopwR1e0SJMnL0DU0", # 21m00Tcm4TlvDq8ikWAM # sXSV9RZ095VZyL64w3ap  # T3b0vsQ5dQwMZ5ckOwBk
                 "GUEST": self.select_voice()}
                 # "GUEST" : '4QLC5fepxZkYmdD2IGRU'}
         stability = random.uniform(0.25, 0.5)
