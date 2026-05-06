@@ -35,6 +35,8 @@ app.add_middleware(
 @app.post("/generate-podcast")
 async def generate_podcast(username: str, subject: str):
     debug = False
+    verbose = True
+    turns = 10
     interests = get_user_interests(username)
     podcast = "Prosper Podcast, a chill podcast for young people in Europe about interesting topics in the world today"
     dialog_instance = Dialog(
@@ -43,13 +45,16 @@ async def generate_podcast(username: str, subject: str):
         vibe="chill",
         interests=interests,
         debug=debug,
-        turns=10
+        turns=turns,
+        verbose=verbose
     )
     script = dialog_instance.result()
     audio_instance = Audio(
         subject=subject,
         debug=debug,
-        dialog=script
+        dialog=script,
+        verbose = verbose,
+        guest_desc=dialog_instance.guest_description
     )
     audio_path = audio_instance.result()
     new_filename = f"{username}_{os.path.basename(audio_path)}"

@@ -20,8 +20,9 @@ class Dialog:
         vibe = "chill",
         interests = ['arts', 'cinema', 'DEI', 'dogs', 'food', 'sports', 'travel'],
         debug = True,
-        turns = 5,
+        turns = 1,
         verbose = False,
+        warning_turns = 3
     ):
         self.subject = subject
         self.podcast = podcast
@@ -32,12 +33,13 @@ class Dialog:
         self.verbose = verbose
         load_dotenv(dotenv_path="backend/env/openai.env")
         self.llm = ChatOpenAI(model="gpt-4o")
+        self.warning_turns = warning_turns
         if debug:
             self.llm = None
                 
     def result(self):
         self.guest_description = self.guest_desc()
-        self.host_description = f"You are the host of {self.podcast}. Your name is Jane Johnson, you are 34 and love dogs. You are Brazilian but lived in Europe your whole life. You know about {self.subject} but not much more than the average person, and you have only met today's guest once, but he is an expert on the topic. "
+        self.host_description = f"You are the host of {self.podcast}. Your name is Jane Johnson, 34. You are Brazilian but lived in Europe your whole life. You know about {self.subject} but not much more than the average person, and you have only met today's guest once, but he is an expert on the topic. "
         self.workflow = StateGraph(PodcastState)
         self.workflow.add_node("host", self.host_node)
         self.workflow.add_node("guest", self.guest_node)
@@ -56,7 +58,7 @@ class Dialog:
         with open(file_path, "w") as f: 
             for line in script:
                 f.write(f"{line['role']}: {line['content']}\n")
-        print(f"Dialog saved to: {file_path}")
+        # print(f"Dialog saved to: {file_path}")
 
     def guest_desc(self): # Guest has to be a male because using male voice
         prompt = f'Create a realistic male character knowledgeable about {self.subject}. They can be an influencer, celebrity, or expert (must be fictional, and cannot be a financial, medical or legal advisor). Give them a distinct interesting personality you think would fit a {self.vibe} vibe. In their personal life they love {self.interests[0]}. Introduce them to an actor playing them in a podcast. For example: "You are Alex Roberts, a 55 year old mathematician with expertise in AI, specifically kernel clustering, who loves sports. Originally from the USA, you now live in Europe with your wife and two kids, your favorite food is hot dogs." Use that approximate format, around 3 sentences. Dont talk to the actor or about the actor, you are describing a character.'
@@ -76,7 +78,7 @@ class Dialog:
         lines_left = self.turns - count + 1
         if (lines_left) == 1:
             prompt += f"You are on your last line in this podcast. Say goodbye to the guest and thank them. "
-        elif (lines_left) < 5:
+        elif (lines_left) < self.warning_turns:
             prompt += f"Note that you have {lines_left} voice lines left in the podcast. We are nearing the end, so your dialogue should inch towards concluding. "
         else:
             prompt += f"Note that you have {lines_left} voice lines left in the podcast, and we want to avoid an abrupt end. "
@@ -91,7 +93,7 @@ class Dialog:
         lines_left = self.turns - count
         if lines_left == 1:
             prompt += f"You are on your last line in this podcast. Say goodbye to the host and thank them. "
-        elif lines_left < 5:
+        elif lines_left < self.warning_turns:
             prompt += f"Note that you have {lines_left} voice lines left in the podcast. We are nearing the end, so your dialogue should inch towards concluding. "
         else:
             prompt += f"Note that you have {lines_left} voice lines left in the podcast, and we want to avoid an abrupt end. "
@@ -107,8 +109,8 @@ class Dialog:
         if self.debug == False:
             response = self.llm.invoke(prompt).content
             response = response.replace("HOST:", "").replace("GUEST:", "").strip()
-        if self.verbose:
-            print(prompt)
+        # if self.verbose:
+            # print(prompt)
         return {"messages": [{"role": "HOST", "content": response}], "count": state["count"]}
 
     def guest_node(self, state: PodcastState):
@@ -119,8 +121,8 @@ class Dialog:
         if self.debug == False:
             response = self.llm.invoke(prompt).content
             response = response.replace("HOST:", "").replace("GUEST:", "").strip()
-        if self.verbose:
-            print(prompt)
+        # if self.verbose:
+            # print(prompt)
         return {"messages": [{"role": "GUEST", "content": response}], "count":state["count"]+1}
 
     def should_continue(self, state: PodcastState):
