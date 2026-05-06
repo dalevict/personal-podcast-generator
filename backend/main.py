@@ -8,16 +8,16 @@ from researcher import Researcher
 
 
 
-max_turns = 5 # total voice lines should be 2 * max_turns + 1 since the host starts and concludes
+max_turns = 1 # total voice lines should be 2 * max_turns + 1 since the host starts and concludes
 
 debug = False
 # debug = True
 
 verbose = True
 
-# subject = "the rise of AI in day-to-day life"
-# interests = ['arts', 'cinema', 'DEI', 'dogs', 'food', 'sports', 'travel']
-interests = ['test']
+subject = "the rise of AI in day-to-day life"
+interests = ['arts', 'cinema', 'DEI', 'dogs', 'food', 'sports', 'travel']
+# interests = ['test']
 podcast = "Prosper Podcast, a chill podcast for young people in Europe about interesting topics in the world today",
 
 
@@ -25,13 +25,24 @@ podcast = "Prosper Podcast, a chill podcast for young people in Europe about int
 
 # TODO: make solution.md and README.md populated
 
+dialogg = Dialog(
+        subject = subject,
+        podcast = podcast,
+        vibe = "chill",
+        interests = interests,
+        debug = debug,
+        turns = max_turns,
+        verbose = verbose,
+).result()
+
 audioo = Audio(
-    subject = interests[0],
+    subject = subject,
     debug=debug, 
-    dialog=[
-        {"role": "HOST", "content": "Hello, nice to meet you"},
-        {"role": "GUEST", "content": "Hi, I'm Gary Bobson"}
-    ],
+    # dialog=[
+    #     {"role": "HOST", "content": "Hello, nice to meet you"},
+    #     {"role": "GUEST", "content": "Hi, I'm Gary Bobson"}
+    # ],
+    dialog = dialogg,
     verbose = verbose
 ).result()
 

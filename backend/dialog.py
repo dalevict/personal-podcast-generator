@@ -45,7 +45,6 @@ class Dialog:
         self.workflow.add_conditional_edges("host", self.should_continue, {"guest": "guest", END: END})
         self.workflow.add_edge("guest", "host")
         self.app = self.workflow.compile() 
-        # TODO: fix extra role mentions in last messages like "HOST: HOST: ..." especially in the last few
         # TODO: fix host yapping about pets
         self.final_state = self.app.invoke({"messages": [], "count": 0})
         if not self.debug:
@@ -54,7 +53,7 @@ class Dialog:
     
     def save_local(self, script):
         file_path = "backend/dialog/dialog.txt"
-        with open(file_path, "w") as f:
+        with open(file_path, "w") as f: 
             for line in script:
                 f.write(f"{line['role']}: {line['content']}\n")
         print(f"Dialog saved to: {file_path}")
@@ -73,7 +72,7 @@ class Dialog:
             prompt += f"' Start the conversation by introducing yourself. "
         else:
             prompt += "' Continue the conversation, don't be too AI-sounding (don't exaggerate how good or interesting things are). "
-        prompt += f"Just talk to the guest and let parts of your life and personality come through. You are not describing the scene or saying 'GUEST' or 'ROLE'. You just talk, one half sentence or many full ones, with no formatting and no line breaks. "
+        prompt += f"Just talk to the guest and let parts of your life and personality come through. You are not describing the scene or saying 'GUEST' or 'ROLE'. You just talk, one half sentence or many full ones, with no formatting and no line breaks. Use natural conversational markers: [slow], [sad], [sarcastically], [sighs], [giggles], [gasps], [whispers] or [pause] (no others) when appropriate to show personality. "
         lines_left = self.turns - count + 1
         if (lines_left) == 1:
             prompt += f"You are on your last line in this podcast. Say goodbye to the guest and thank them. "
@@ -88,7 +87,7 @@ class Dialog:
 
     def guest_prompt(self, messages='', count=0):
         prompt = self.guest_description + "Here is a description of your the host of the podcast you are in (ignore the 2nd person): '" + self.host_description
-        prompt += "' Continue the conversation. Keep it chill and informal don't repeat yourself or describe yourself or the host, don't be too AI-sounding (don't exaggerate how good or interesting things are), just talk to the host and let parts of your life and personality come through. You are not describing the scene or saying 'GUEST' or 'ROLE'. You just talk, one half sentence or many full ones, with no formatting and no line breaks. " 
+        prompt += "' Continue the conversation. Keep it chill and informal don't repeat yourself or describe yourself or the host, don't be too AI-sounding (don't exaggerate how good or interesting things are), just talk to the host and let parts of your life and personality come through. You are not describing the scene or saying 'GUEST' or 'ROLE'. You just talk, one half sentence or many full ones, with no formatting and no line breaks. Use natural conversational markers: [slow], [sad], [sarcastically], [sighs], [giggles], [gasps], [whispers] or [pause] (no others) when appropriate to show personality. " 
         lines_left = self.turns - count
         if lines_left == 1:
             prompt += f"You are on your last line in this podcast. Say goodbye to the host and thank them. "
@@ -107,6 +106,7 @@ class Dialog:
         response = prompt
         if self.debug == False:
             response = self.llm.invoke(prompt).content
+            response = response.replace("HOST:", "").replace("GUEST:", "").strip()
         if self.verbose:
             print(prompt)
         return {"messages": [{"role": "HOST", "content": response}], "count": state["count"]}
@@ -118,6 +118,7 @@ class Dialog:
         response = prompt
         if self.debug == False:
             response = self.llm.invoke(prompt).content
+            response = response.replace("HOST:", "").replace("GUEST:", "").strip()
         if self.verbose:
             print(prompt)
         return {"messages": [{"role": "GUEST", "content": response}], "count":state["count"]+1}

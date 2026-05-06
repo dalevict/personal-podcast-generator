@@ -10,6 +10,8 @@ from dotenv import load_dotenv
 
 import random
 
+from elevenlabs import VoiceSettings
+
 
 
 class Audio:
@@ -36,7 +38,13 @@ class Audio:
             audio_stream = self.client.text_to_speech.stream( # TODO: fix occasional audio track being cut off
                 text=line['content'],
                 voice_id=voices[line['role']],
-                model_id="eleven_multilingual_v2"
+                model_id="eleven_v3",
+                voice_settings=VoiceSettings( # TODO: fix hardcoding
+                    stability=0.35,
+                    similarity_boost=0.75, 
+                    style=0.45,
+                    use_speaker_boost=True
+                )
             )
             if self.verbose:
                 print("=======================================================================")
