@@ -44,7 +44,6 @@ export default function App() {
                 headers: { 
                     'Content-Type': 'application/json' 
                 },
-                // Send username inside the body, not as a query param
                 body: JSON.stringify({
                     username: user,
                     interests: updatedList
@@ -106,10 +105,24 @@ export default function App() {
     };
     const cardStyle = { background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' };
     const metricStyle = { fontSize: '32px', fontWeight: 'bold', color: '#007bff', margin: '10px 0' };
+    const fetchSubjects = React.useCallback(async () => {
+        if (!user) return;
+        console.log("Fetching subjects automatically...");
+        try {
+            const res = await fetch(`${API_BASE}/subjects?username=${user}`);
+            const data = await res.json();
+            setSubjects(data.subjects || []); 
+        } catch (err) {
+            console.error("Failed to fetch subjects:", err);
+        }
+    }, [user]);
+    useEffect(() => {
+        if (view === 'generate' && subjects.length === 0) {
+            fetchSubjects();
+        }
+    }, [view, subjects.length, fetchSubjects]);
 
 
-
-    // 1. LOGIN PAGE
     if (view === 'login') return (
         <div style={{ padding: 40, fontFamily: 'sans-serif' }}>
             <h1>Login</h1>
@@ -128,7 +141,6 @@ export default function App() {
         </div>
     );
 
-    // 2. INTERESTS PAGE
     if (view === 'interests') return (
         <div style={{ padding: 40, fontFamily: 'sans-serif', position: 'relative' }}>
             <LogoutButton />
@@ -181,43 +193,33 @@ export default function App() {
         </div>
     );
 
-    // 3. GENERATE PAGE
-    // Inside View 3: GENERATE PAGE
-    if (view === 'generate') return (
-    <div style={{ padding: 40, fontFamily: 'sans-serif', position: 'relative' }}>
-        <LogoutButton />
-        <MetricsButton/>
-        <h1>Pick a Topic</h1>
-        
-        <button onClick={async () => {
-        // Step 1: Just get the topics[cite: 1]
-        const res = await fetch(`${API_BASE}/subjects?username=${user}`);
-        const data = await res.json();
-        setSubjects(data.subjects || []); 
-        }}>Refresh Suggestions</button>
 
-        <ul style={{ marginTop: 20 }}>
-        {subjects.map((s, i) => (
-            <li key={i} style={{ marginBottom: 15 }}>
-            <strong>{s}</strong> <br/>
-            {/* Step 2: Only generate when THIS button is clicked[cite: 1] */}
-            <button onClick={async () => {
-                // alert(`Generating podcast for: ${s}`);
-                // await fetch(`${API_BASE}/generate-podcast?username=${user}&subject=${encodeURIComponent(s)}`, {
-                //     method: 'POST'
-                // });
-                // setView('library');
-                setSelectedSubject(s);
-                setView('configure');
-            }}>Configure This Episode</button>
-            </li>
-        ))}
-        </ul>
-        <button onClick={() => setView('interests')}>Back</button>
-    </div>
+    if (view === 'generate') return (
+        <div style={{ padding: 40, fontFamily: 'sans-serif', position: 'relative' }}>
+            <LogoutButton />
+            <MetricsButton/>
+            <h1>Pick a Topic</h1>
+            {subjects.length === 0 ? (
+                <p>Looking for topics based on your interests...</p>
+            ) : (
+                <ul style={{ marginTop: 20 }}>
+                    {subjects.map((s, i) => (
+                        <li key={i} style={{ marginBottom: 15 }}>
+                            <strong>{s}</strong> <br/>
+                            <button onClick={() => {
+                                setSelectedSubject(s);
+                                setView('configure');
+                            }}>Configure This Episode</button>
+                        </li>
+                    ))}
+                </ul>
+            )}
+            
+            <button onClick={() => setView('interests')}>Back</button>
+            <button onClick={fetchSubjects} style={{ marginLeft: 10 }}>Refresh Manually</button>
+        </div>
     );
 
-    // 4. LIBRARY PAGE
     if (view === 'library') return (
         <div style={{ padding: 40, fontFamily: 'sans-serif', position: 'relative' }}>
             <LogoutButton />
