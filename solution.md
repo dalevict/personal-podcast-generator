@@ -29,7 +29,7 @@ There is also a metrics page.
 
 # Design choices
 
-The choice of using OpenAI and ElevenLabs is motivated by the API keys provided in the prompt [text](https://you.ashbyhq.com/prosper-ai/assignment/cff6a8c9-fb3b-4bfe-be9a-b6db58452b02).   
+The choice of using OpenAI and ElevenLabs is motivated by the API keys provided in the [prompt](https://you.ashbyhq.com/prosper-ai/assignment/cff6a8c9-fb3b-4bfe-be9a-b6db58452b02).   
 * While models like `GPT-5` are more creative, `GPT 4.0 mini` is preferred for text generation due to being faster and cheaper, which is important when processing a large volume of text lines.  
 * The ElevenLabs `eleven_v3` model is used for the audio generation. Using it is crucial because it allows more natural sounding speech and the use of tone indicators.   
 * Tavily API is used for generating additional current context about the subject. Without this feature the podcast members will simply talk about the subject and not dive into any specific issue.  
