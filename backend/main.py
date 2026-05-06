@@ -15,7 +15,7 @@ debug = False
 
 verbose = True
 
-subject = "the rise of AI in day-to-day life"
+subject = "israel and palestine"
 interests = ['arts', 'cinema', 'DEI', 'dogs', 'food', 'sports', 'travel']
 # interests = ['test']
 podcast = "Prosper Podcast, a chill podcast for young people in Europe about interesting topics in the world today",
@@ -44,19 +44,19 @@ dialogg = Dialog(
         context = researcher.fetch_context()
 )
 script = dialogg.result()
-audioo = Audio(
-    subject = subject,
-    debug=debug, 
-    # dialog=[
-    #     {"role": "HOST", "content": "Hello, nice to meet you!"},
-    #     {"role": "GUEST", "content": "Hi, I'm Gary Bobson?"},
-    #     {"role": "HOST", "content": "What year is it?"},
-    #     {"role": "GUEST", "content": "We will ask the questions!"}
-    # ],
-    dialog = script,
-    verbose = verbose,
-    guest_desc=dialogg.guest_description
-).result()
+# audioo = Audio(
+#     subject = subject,
+#     debug=debug, 
+#     # dialog=[
+#     #     {"role": "HOST", "content": "Hello, nice to meet you!"},
+#     #     {"role": "GUEST", "content": "Hi, I'm Gary Bobson?"},
+#     #     {"role": "HOST", "content": "What year is it?"},
+#     #     {"role": "GUEST", "content": "We will ask the questions!"}
+#     # ],
+#     dialog = script,
+#     verbose = verbose,
+#     guest_desc=dialogg.guest_description
+# ).result()
 
 # From the project root
 # uvicorn backend.api:app --reload --port 8000

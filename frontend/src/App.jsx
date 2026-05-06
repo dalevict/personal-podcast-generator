@@ -35,11 +35,7 @@ export default function App() {
         setInterests([]);
     };
     const handleMetrics = () => {
-        setUser('');
         setView('metrics');
-        setSubjects([]);
-        setPodcasts([]);
-        setInterests([]);
     };
     const saveInterests = async (updatedList) => {
         try {
@@ -250,7 +246,7 @@ export default function App() {
             
             {!generating ? (
                 <div>
-                    <p>How long should the podcast be? (Number of conversational turns)</p>
+                    <p>How long should the podcast be approximately? (Miinutes)</p>
                     <input 
                         type="number" 
                         value={turns} 
