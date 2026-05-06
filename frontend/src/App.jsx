@@ -34,6 +34,13 @@ export default function App() {
         setPodcasts([]);
         setInterests([]);
     };
+    const handleMetrics = () => {
+        setUser('');
+        setView('metrics');
+        setSubjects([]);
+        setPodcasts([]);
+        setInterests([]);
+    };
     const saveInterests = async (updatedList) => {
         try {
             const response = await fetch(`${API_BASE}/update-interests`, {
@@ -73,9 +80,38 @@ export default function App() {
             Logout
         </button>
     );
+    const MetricsButton = () => (
+        <button 
+            onClick={handleMetrics}
+            style={{
+                position: 'absolute',
+                top: '60px',
+                right: '20px',
+                padding: '8px 15px',
+                backgroundColor: '#6c757d',
+                color: 'white',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer'
+            }}
+        >
+            View Metrics
+        </button>
+    );
     const [selectedSubject, setSelectedSubject] = useState('');
     const [turns, setTurns] = useState(10);
     const [debugLog, setDebugLog] = useState('');
+    const mockMetrics = {
+        totalGenerations: 1248,
+        avgTurnsPerEpisode: 12.5,
+        storageUsed: "4.2 GB",
+        popularTopics: ["AI Ethics", "Space Exploration", "European Economy"],
+        dailyActiveUsers: [45, 52, 48, 70, 85, 92, 88]
+    };
+    const cardStyle = { background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' };
+    const metricStyle = { fontSize: '32px', fontWeight: 'bold', color: '#007bff', margin: '10px 0' };
+
+
 
     // 1. LOGIN PAGE
     if (view === 'login') return (
@@ -100,6 +136,7 @@ export default function App() {
     if (view === 'interests') return (
         <div style={{ padding: 40, fontFamily: 'sans-serif', position: 'relative' }}>
             <LogoutButton />
+            <MetricsButton/>
             <h1>Your Interests, {user}</h1>
             
             <div style={{ marginBottom: '20px' }}>
@@ -153,6 +190,7 @@ export default function App() {
     if (view === 'generate') return (
     <div style={{ padding: 40, fontFamily: 'sans-serif', position: 'relative' }}>
         <LogoutButton />
+        <MetricsButton/>
         <h1>Pick a Topic</h1>
         
         <button onClick={async () => {
@@ -187,6 +225,7 @@ export default function App() {
     if (view === 'library') return (
         <div style={{ padding: 40, fontFamily: 'sans-serif', position: 'relative' }}>
             <LogoutButton />
+            <MetricsButton/>
             <h1>Your Podcast Library</h1>
             <button onClick={() => setView('interests')} style={{ marginBottom: 20 }}>Back to Interests</button>
             
@@ -206,6 +245,7 @@ export default function App() {
     if (view === 'configure') return (
         <div style={{ padding: 40, fontFamily: 'sans-serif' }}>
             <LogoutButton />
+            <MetricsButton/>
             <h1>Configure: {selectedSubject}</h1>
             
             {!generating ? (
@@ -264,6 +304,67 @@ export default function App() {
                     </div>
                 </div>
             )}
+        </div>
+    );
+
+    if (view === 'metrics') return (
+        <div style={{ padding: 40, fontFamily: 'sans-serif', backgroundColor: '#f4f7f6', minHeight: '100vh' }}>
+            <LogoutButton />
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h1>Product Success Dashboard (Mocked)</h1>
+                <button 
+                    onClick={() => setView('interests')} 
+                    style={{
+                        position: 'absolute',
+                        top: '60px',
+                        right: '20px',
+                        padding: '8px 15px',
+                        backgroundColor: '#6c757d',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer'
+                    }}
+                >
+                    Exit Admin
+                </button>
+            </div>
+
+            {/* Metric Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginTop: 20 }}>
+                <div style={cardStyle}>
+                    <h3>Total Episodes</h3>
+                    <p style={metricStyle}>{mockMetrics.totalGenerations}</p>
+                </div>
+                <div style={cardStyle}>
+                    <h3>Avg. Episode Length</h3>
+                    <p style={metricStyle}>{mockMetrics.avgTurnsPerEpisode} Turns (~{mockMetrics.avgTurnsPerEpisode} minutes)</p>
+                </div>
+                <div style={cardStyle}>
+                    <h3>Storage Used</h3>
+                    <p style={metricStyle}>{mockMetrics.storageUsed}</p>
+                </div>
+            </div>
+
+            {/* Detailed Insights */}
+            <div style={{ marginTop: 30, display: 'flex', gap: '20px' }}>
+                <div style={{ ...cardStyle, flex: 2 }}>
+                    <h3>Popular Research Topics</h3>
+                    <ul>
+                        {mockMetrics.popularTopics.map((topic, i) => (
+                            <li key={i} style={{ padding: '8px 0', borderBottom: '1px solid #eee' }}>{topic}</li>
+                        ))}
+                    </ul>
+                </div>
+                <div style={{ ...cardStyle, flex: 1 }}>
+                    <h3>System Status</h3>
+                    <p>🟢 Researcher API: Online</p>
+                    <p>🟢 Dialog API: Online</p>
+                    <p>🟢 Audio API: Online</p>
+                    <p>🟢 Local user database: Connected</p>
+                </div>
+            </div>
         </div>
     );
 }
