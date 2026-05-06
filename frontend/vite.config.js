@@ -6,7 +6,6 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      // This helps avoid CORS issues during development
       '/api': {
         target: 'http://localhost:8000',
         changeOrigin: true,

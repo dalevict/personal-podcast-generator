@@ -25,14 +25,23 @@ podcast = "Prosper Podcast, a chill podcast for young people in Europe about int
 
 # TODO: make solution.md and README.md populated
 
+researcher = Researcher(
+        interests=interests, 
+        podcast=podcast, 
+        debug=debug, 
+        verbose=verbose,
+        subject=subject
+    )
+
 dialogg = Dialog(
         subject = subject,
         podcast = podcast,
         vibe = "chill",
         interests = interests,
         debug = debug,
-        turns = 1,
+        turns = 5,
         verbose = verbose,
+        context = researcher.fetch_context()
 )
 script = dialogg.result()
 audioo = Audio(

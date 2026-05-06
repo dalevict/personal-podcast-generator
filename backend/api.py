@@ -39,6 +39,14 @@ async def generate_podcast(username: str, subject: str):
     turns = 10
     interests = get_user_interests(username)
     podcast = "Prosper Podcast, a chill podcast for young people in Europe about interesting topics in the world today"
+    researcher = Researcher(
+        interests=interests, 
+        podcast=podcast, 
+        debug=debug, 
+        verbose=verbose,
+        subject=subject
+    )
+    context = researcher.fetch_context()
     dialog_instance = Dialog(
         subject=subject,
         podcast=podcast,
@@ -46,6 +54,7 @@ async def generate_podcast(username: str, subject: str):
         interests=interests,
         debug=debug,
         turns=turns,
+        context=context,
         verbose=verbose
     )
     script = dialog_instance.result()

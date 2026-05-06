@@ -20,9 +20,10 @@ class Dialog:
         vibe = "chill",
         interests = ['arts', 'cinema', 'DEI', 'dogs', 'food', 'sports', 'travel'],
         debug = True,
-        turns = 1,
+        turns = 10,
         verbose = False,
-        warning_turns = 3
+        warning_turns = 2,
+        context =''
     ):
         self.subject = subject
         self.podcast = podcast
@@ -31,6 +32,7 @@ class Dialog:
         self.debug = debug
         self.turns = turns
         self.verbose = verbose
+        self.context = context
         load_dotenv(dotenv_path="backend/env/openai.env")
         self.llm = ChatOpenAI(model="gpt-4o")
         self.warning_turns = warning_turns
@@ -49,7 +51,6 @@ class Dialog:
         self.workflow.add_conditional_edges("host", self.should_continue, {"guest": "guest", END: END})
         self.workflow.add_edge("guest", "host")
         self.app = self.workflow.compile() 
-        # TODO: fix host yapping about pets
         self.final_state = self.app.invoke({"messages": [], "count": 0})
         if not self.debug:
             self.save_local(self.final_state['messages'])
@@ -92,6 +93,8 @@ class Dialog:
     def guest_prompt(self, messages='', count=0):
         prompt = self.guest_description + "Here is a description of your the host of the podcast you are in (ignore the 2nd person): '" + self.host_description
         prompt += "' Continue the conversation. Keep it chill and informal don't repeat yourself or describe yourself or the host, don't be too AI-sounding (don't exaggerate how good or interesting things are), just talk to the host and let parts of your life and personality come through. You are not describing the scene or saying 'GUEST' or 'ROLE'. You just talk, one half sentence or many full ones, with no formatting and no line breaks. Use natural conversational markers: [slow], [sad], [sarcastically], [sighs], [giggles], [gasps], [whispers] or [pause] (no others) when appropriate to show personality. " 
+        if self.context:
+            prompt += f"You may reference these real recent facts and news stories to make the conversation more interesting and grounded: {self.context}. Only bring them up naturally if relevant. You can also be specific about things you do or learned about. "
         lines_left = self.turns - count
         if lines_left == 1:
             prompt += f"You are on your last line in this podcast. Say goodbye to the host and thank them. "
