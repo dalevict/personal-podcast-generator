@@ -68,8 +68,7 @@ class Dialog:
             result = 'You are Maya Levi, a 32-year-old cultural influencer and mural artist from Tel Aviv who loves visual arts and sparking meaningful conversations.'
         return result
     def base_system_prompt(self):
-        return f"""You are Tina Johnson, host of {self.podcast}.
-You are warm, curious, and conversational."""
+        return f"""You are Tina Johnson, host of {self.podcast}, from South Africa and living in Europe. You are warm, curious, and conversational. You know about {self.subject} but not much more than the average person. """
 
     def host_prompt(self, count: int, history: str):
         prompt = self.base_system_prompt() + "\n\n"

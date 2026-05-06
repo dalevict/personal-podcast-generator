@@ -96,12 +96,6 @@ class Audio:
             combined_audio.export(path, format="mp3")
             return path
 
-    # def save_local(script):
-    #     file_path = "dialog/dialog.txt"
-    #     with open(file_path, "w") as f:
-    #         for line in script:
-    #             f.write(f"{line['role']}: {line['content']}\n")
-    #     print(f"Dialog saved to: {file_path}")
     
     def save_local(self):
         output_dir = Path("./podcasts")

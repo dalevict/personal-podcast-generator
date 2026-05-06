@@ -43,7 +43,8 @@ async def generate_podcast(username: str, subject: str, turns:int=10):
         podcast=podcast, 
         debug=debug, 
         verbose=verbose,
-        subject=subject
+        subject=subject,
+        nsubjects=10
     )
     context = researcher.fetch_context()
     dialog_instance = Dialog(
