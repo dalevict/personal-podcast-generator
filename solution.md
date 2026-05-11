@@ -15,7 +15,7 @@ Finally, the dialog is used to generate audio using the host and character. The 
 The backend is a simple FastAPI server that orchestrates a pipeline via Python classes `Researcher`, `Dialog`, and `Audio`.   
 `Researcher` takes in the user's interests as a list of strings and generates podcast topics using the `subjects` method using `GPT 4.0 mini`, and researches extra context for the guest to use using the `fetch_context` method.   
 `Dialog` generates the characters and dialog. Using LangGraph states, the prompts are generated based on the interests of the user and the subject of the podcast. The characters speak one after another, and use tone indicators like `[sighs]`, `[softly]` to prompt the audio generator to make them sound more natural.  
-Finally, the `Audio` class takes the dialog, as well as the description of the guest to choose their voice, and reads the dialog with alternating voices. These audio clips are then stitched together to produce the final `mp3` file. This file is stored locally in `backend/podcasts`.
+Finally, the `Audio` class takes the dialog, as well as the description of the guest to choose their voice, and reads the dialog with alternating voices.It also chooses the voice selected for the guest character (using an OpenAI call to use the best match out of hardcoded list). These audio clips are then stitched together to produce the final `mp3` file. This file is stored locally in `backend/podcasts`.
 The SQLite database decides which podcasts and which interests belong to which user.   
 
 

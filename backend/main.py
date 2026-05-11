@@ -26,12 +26,12 @@ podcast = "Prosper Podcast, a chill podcast for young people in Europe about int
 # TODO: make solution.md and README.md populated
 
 researcher = Researcher(
-        interests=interests, 
-        podcast=podcast, 
-        debug=debug, 
-        verbose=verbose,
-        subject=subject
-    )
+    interests=interests, 
+    podcast=podcast, 
+    debug=debug, 
+    verbose=verbose,
+    subject=subject
+)
 
 dialogg = Dialog(
         subject = subject,
