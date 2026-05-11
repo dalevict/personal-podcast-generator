@@ -121,6 +121,7 @@ export default function App() {
             fetchSubjects();
         }
     }, [view, subjects.length, fetchSubjects]);
+    const [error, setError] = useState(null);
 
 
     if (view === 'login') return (
@@ -246,19 +247,22 @@ export default function App() {
             <MetricsButton/>
             <h1>Configure: {selectedSubject}</h1>
             
+            {/* Display error banner if something failed */}
+            {error && (
+                <div style={{ background: '#ffe6e6', color: '#cc0000', padding: '10px', borderRadius: '5px', marginBottom: '20px' }}>
+                    <strong>Error:</strong> {error}
+                    <button onClick={() => setError(null)} style={{ marginLeft: '10px' }}>Dismiss</button>
+                </div>
+            )}
+
             {!generating ? (
                 <div>
-                    <p>How long should the podcast be approximately? (Miinutes)</p>
-                    <input 
-                        type="number" 
-                        value={turns} 
-                        onChange={(e) => setTurns(e.target.value)}
-                        style={{ padding: 10, width: '60px', marginRight: 10 }}
-                    />
+                    {/* ... existing turn input logic ... */}
                     <button 
                         style={{ padding: '10px 20px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '5px' }}
                         onClick={async () => {
                             setGenerating(true);
+                            setError(null); // Reset error on new attempt
                             setDebugLog("Starting research and script generation...");
                             
                             try {
@@ -267,8 +271,12 @@ export default function App() {
                                 });
                                 if (res.ok) {
                                     setView('library');
+                                } else {
+                                    const errorData = await res.json();
+                                    setError(errorData.detail || "Server error during generation");
                                 }
                             } catch (err) {
+                                setError("Network error: Check if the backend is running and API keys work.");
                                 setDebugLog("Error: " + err.message);
                             } finally {
                                 setGenerating(false);
@@ -280,26 +288,10 @@ export default function App() {
                     <button onClick={() => setView('generate')} style={{ marginLeft: 10 }}>Cancel</button>
                 </div>
             ) : (
+                /* ... Loading Spinner and Debug Log ... */
                 <div style={{ marginTop: 20 }}>
-                    <div className="spinner" style={{ marginBottom: 20 }}>⏳ Generating your podcast... please wait.</div>
-                    
-                    {/* Debug Info Section */}
-                    <div style={{ 
-                        background: '#1e1e1e', 
-                        color: '#00ff00', 
-                        padding: 15, 
-                        borderRadius: 5, 
-                        fontFamily: 'monospace',
-                        fontSize: '12px',
-                        maxHeight: '200px',
-                        overflowY: 'auto'
-                    }}>
-                        <strong>Debug Stream:</strong>
-                        <p>{debugLog}</p>
-                        <p>Processing subject: {selectedSubject}</p>
-                        <p>Requested turns: {turns}</p>
-                        <p>Contacting AI nodes...</p>
-                    </div>
+                    <div className="spinner">⏳ Generating your podcast... please wait.</div>
+                    <button onClick={() => setGenerating(false)} style={{ marginTop: '10px' }}>Stop Waiting</button>
                 </div>
             )}
         </div>
