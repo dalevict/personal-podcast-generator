@@ -3,7 +3,7 @@ from langgraph.graph import StateGraph, START, END
 from langchain_openai import ChatOpenAI
 import operator
 from dotenv import load_dotenv
-
+import re
 
 try:
     from pydantic.v1 import BaseModel, Field
@@ -112,6 +112,7 @@ class Dialog:
         else:
             response = self.structured_llm.invoke(prompt)
             content = self.clean_content(response.content)
+        content = re.sub(r'^(HOST|GUEST|TINA|GUEST\sNAME):\s*', '', content, flags=re.IGNORECASE)
         return {
             "messages": [{"role": "HOST", "content": content}],
             "count": state["count"]
@@ -125,6 +126,7 @@ class Dialog:
         else:
             response = self.structured_llm.invoke(prompt)
             content = self.clean_content(response.content)
+        content = re.sub(r'^(HOST|GUEST|TINA|GUEST\sNAME):\s*', '', content, flags=re.IGNORECASE)
         return {
             "messages": [{"role": "GUEST", "content": content}],
             "count": state["count"] + 1
