@@ -7,6 +7,7 @@ This services requires the following API keys, in the `backend/env` folder:
 * `elevenlabs.env`
 * `openai.env`
 * `tavily.env`
+
 The ElevenLabs and OpenAI keys require a paid subscription. To run without any external requests, change this [line](https://github.com/dalevict/personal-podcast-generator/blob/4df25f7ecad29a974457661bce86d13c6c42c012/backend/api.py#L37) to `debug = True`.  
 Please also note that this was written on an Ubuntu machine and not tested in any other environment.  
 To run the frontend: in the main directory run `uvicorn backend.api:app --reload --port 8000`  
