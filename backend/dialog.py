@@ -27,7 +27,7 @@ class Dialog:
     def __init__(
         self, 
         subject="",
-        podcast="Prosper Podcast, a chill podcast for young people in Europe about interesting topics in the world today",
+        podcast="Chilling Podcast, a chill podcast for young people in Europe about interesting topics in the world today",
         vibe="chill",
         interests=None,
         debug=True,

@@ -15,10 +15,10 @@ debug = False
 
 verbose = True
 
-subject = "israel and palestine"
+subject = "loud music at night"
 interests = ['arts', 'cinema', 'DEI', 'dogs', 'food', 'sports', 'travel']
 # interests = ['test']
-podcast = "Prosper Podcast, a chill podcast for young people in Europe about interesting topics in the world today",
+podcast = "Chilling Podcast, a chill podcast for young people in Europe about interesting topics in the world today",
 
 
 # TODO: fix spaghetti code, other todos

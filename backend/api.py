@@ -37,7 +37,7 @@ async def generate_podcast(username: str, subject: str, turns:int=10):
     debug = False
     verbose = True
     interests = get_user_interests(username)
-    podcast = "Prosper Podcast, a chill podcast for young people in Europe about interesting topics in the world today"
+    podcast = "Chilling Podcast, a chill podcast for young people in Europe about interesting topics in the world today"
     researcher = Researcher(
         interests=interests, 
         podcast=podcast, 
@@ -91,7 +91,7 @@ def get_subjects(username: str):
     interests = get_user_interests(username)
     researcher = Researcher(
         interests=interests,
-        podcast="Prosper Podcast, a chill podcast for young people in Europe about interesting topics in the world today",
+        podcast="Chilling Podcast, a chill podcast for young people in Europe about interesting topics in the world today",
         debug=False,
         verbose=False
     )
